@@ -27,11 +27,12 @@ for interestRate in interets:
     elif(interestRate == interets[2]): axis = axs[1, 0]
     else: axis = axs[1, 1]
 
-    axis.plot(rmb, label = "rmb", linewidth = 3)
-    axis.plot(InteretsPayes, label = "interets paye")
-    axis.plot(capitalPaye, label = "capital paye")
+    axis.plot(InteretsPayes+capitalPaye, label = "interets paye", color = 'red')
+    axis.plot(capitalPaye, label = "capital paye", color = 'green')
+    axis.fill_between(range(durationInYear*12+2), InteretsPayes+capitalPaye, capitalPaye, color = 'red', alpha = .2)
+    axis.fill_between(range(durationInYear*12+2), capitalPaye, color = 'green', alpha = .2)
     axis.plot(restantDu, label = "restant du")
-    axis.set_title(f"{capital/1000}k€ of capital over {durationInYear} year with {interestRate*100:.1f}% interest rate = {mensualite:.2f}€/mois pour un total de {(rmb[durationInYear*12+1])/1000:.0f}k€")
+    axis.set_title(f"{capital/1000:.0f}k€ | {durationInYear} years | {interestRate*100:.1f}% | {mensualite:.1f}€/month | {(rmb[durationInYear*12+1])/1000:.0f}k€ total")
     axis.legend()
 
     rmb = np.array([0])
