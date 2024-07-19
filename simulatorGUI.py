@@ -4,6 +4,7 @@ from matplotlib import rcParams
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
 import numpy as np
+from screeninfo import get_monitors
 
 # Define colors
 themeBackgroundColor = "#222222"
@@ -23,6 +24,12 @@ rcParams['xtick.labelcolor'] = "white"
 rcParams['ytick.color'] = "white"
 rcParams['xtick.color'] = "white"
 rcParams['text.color'] = "white"
+
+for m in get_monitors():
+    if(m.is_primary):
+        monitorWidth = m.width
+        monitorHeight = m.height
+        break
 
 # Funcions
 def plot():
@@ -52,7 +59,7 @@ def plot():
     plot1.legend()
     plot1.set_facecolor(themeBackgroundColor)
 
-    canvas = FigureCanvasTkAgg(fig, master = window)    # creating the Tkinter canvas containing the Matplotlib figure 
+    canvas = FigureCanvasTkAgg(fig, master = loanTab)    # creating the Tkinter canvas containing the Matplotlib figure 
     canvas.draw() 
     canvas.get_tk_widget().pack()                       # placing the canvas on the Tkinter window 
     #toolbar = NavigationToolbar2Tk(canvas, window)      # creating the Matplotlib toolbar 
@@ -60,8 +67,26 @@ def plot():
     #canvas.get_tk_widget().pack()                       # placing the toolbar on the Tkinter window 
 
 # Main
-window = ttk.Window(themename="darkly")
-window.title('Plotting in Tkinter')                                         # setting the title and  
-window.geometry("500x500")                                                  # setting the dimensions of the main window 
+window = ttk.Window(themename="darkly")                                     # Themes : https://ttkbootstrap.readthedocs.io/en/latest/themes
+window.title('Investment simulator')                                         # setting the title and  
+window.geometry(f"{m.width*0.8:.0f}x{m.height*0.8:.0f}+{m.width*0.1:.0f}+{m.height*0.1:.0f}")
+
+notebook = ttk.Notebook(window, width = monitorWidth, height = monitorHeight)
+notebook.pack(padx=5, pady=5)
+
+setupTab = ttk.Frame(notebook)
+loanTab = ttk.Frame(notebook)
+stockTab = ttk.Frame(notebook)
+buyTab = ttk.Frame(notebook)
+unfurnishedTab = ttk.Frame(notebook)
+furnishedTab = ttk.Frame(notebook)
+
+notebook.add(setupTab, text=" Setup full simulation ")
+notebook.add(loanTab, text=" Loan simulaor ")
+notebook.add(stockTab, text=" Stock simulator ")
+notebook.add(buyTab, text=" Buy home simulator ")
+notebook.add(unfurnishedTab, text=" Invest unfurnished simulator ")
+notebook.add(furnishedTab, text=" Invest furnished simulator ")
+
 plot()
 window.mainloop()                                                           # run the gui 
