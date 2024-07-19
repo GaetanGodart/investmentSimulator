@@ -10,6 +10,20 @@ themeBackgroundColor = "#222222"
 themeRed = "#d9534f"
 themeGreen = "#5cb85c"
 
+# Set matplot theme colors
+# To see all attributes : print( rcParams.keys())
+rcParams['figure.facecolor'] = themeBackgroundColor
+rcParams['legend.facecolor'] = themeBackgroundColor
+rcParams['legend.labelcolor'] = "white"
+rcParams['axes.edgecolor'] = "white"
+rcParams['axes.labelcolor'] = "white"
+rcParams['axes.facecolor'] = "white"
+rcParams['ytick.labelcolor'] = "white"
+rcParams['xtick.labelcolor'] = "white"
+rcParams['ytick.color'] = "white"
+rcParams['xtick.color'] = "white"
+rcParams['text.color'] = "white"
+
 # Funcions
 def plot():
     fig = Figure()                                      # the figure that will contain the plot 
@@ -36,6 +50,7 @@ def plot():
     plot1.fill_between(range(duration*12+2), capitalPaye, color = themeGreen, alpha = .2)                               # Capital
     plot1.set_title(f"{duration} years | {interestRate*100:.1f}% | {mensualite:.2f}%/month | +{rmb-100:.0f}% payed")
     plot1.legend()
+    plot1.set_facecolor(themeBackgroundColor)
 
     canvas = FigureCanvasTkAgg(fig, master = window)    # creating the Tkinter canvas containing the Matplotlib figure 
     canvas.draw() 
