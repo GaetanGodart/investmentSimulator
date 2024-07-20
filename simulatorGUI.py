@@ -6,11 +6,15 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import numpy as np
 from screeninfo import get_monitors
 
+# Local imports
+import loanCalculator
+
 
 # Define colors
 themeBackgroundColor = "#222222"
 themeRed = "#d9534f"
 themeGreen = "#5cb85c"
+themeBlue = "#375a7f"
 
 
 # Set matplot theme colors
@@ -40,26 +44,19 @@ def plot(destination):
     fig = Figure()                                      # the figure that will contain the plot 
     plot1 = fig.add_subplot(1, 1, 1)                    # adding the subplot 
 
-    rmb = 0
-    capital = 100
+    capital = 100000
     duration = 20
     interestRate = 0.03
-    InteretsPayes = np.array([0])
-    capitalPaye = np.array([0])
-    restantDu = np.array([capital])
-    mensualite = (interestRate/12*capital)/(1-(1/pow(1+interestRate/12, duration*12)))
+    flatFee = 1.5
 
-    for i in range(duration*12+1):
-        rmb = rmb + mensualite
-        InteretsPayes = np.append(InteretsPayes, InteretsPayes[i]+restantDu[i]*interestRate/12)
-        capitalPaye = np.append(capitalPaye, capitalPaye[i]+mensualite-restantDu[i]*interestRate/12)
-        restantDu = np.append(restantDu, restantDu[i]-mensualite+restantDu[i]*interestRate/12)
+    montlyPayment, costOfLoan, payedBack, remaining = loanCalculator.calculateLoan(capital, duration, interestRate, flatFee)
 
-    plot1.plot(InteretsPayes+capitalPaye, label = "interets paye", color = themeRed)                                    # Cost line
-    plot1.plot(capitalPaye, label = "capital paye", color = themeGreen)                                                 # Capital line
-    plot1.fill_between(range(duration*12+2), InteretsPayes+capitalPaye, capitalPaye, color = themeRed, alpha = .2)      # Cost area
-    plot1.fill_between(range(duration*12+2), capitalPaye, color = themeGreen, alpha = .2)                               # Capital
-    plot1.set_title(f"{duration} years | {interestRate*100:.1f}% | {mensualite:.2f}%/month | +{rmb-100:.0f}% payed")
+    plot1.plot(costOfLoan + payedBack, label = "Cost of the loan", color = themeRed)                            # Cost line
+    plot1.plot(payedBack, label = "Capital payed", color = themeGreen)                                          # Capital line
+    plot1.plot(remaining, label = "Remaining", color = themeBlue)                                               # Remaining line
+    plot1.fill_between(range(duration*12+2), costOfLoan + payedBack, payedBack, color = themeRed, alpha = .2)   # Cost area
+    plot1.fill_between(range(duration*12+2), payedBack, color = themeGreen, alpha = .2)                         # Capital area
+    plot1.set_title(f"{duration} years | {interestRate*100:.1f}% | {flatFee:.1f}€ flat | {montlyPayment:.0f}€/month | +{(100*costOfLoan[-1]+capital)/capital:.0f}% payed")
     plot1.legend()
     plot1.set_facecolor(themeBackgroundColor)
 
