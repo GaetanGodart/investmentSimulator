@@ -44,8 +44,8 @@ def plot(destination):
     fig = Figure()                                      # the figure that will contain the plot 
     plot1 = fig.add_subplot(1, 1, 1)                    # adding the subplot 
 
-    capital = 100000
-    duration = 20
+    capital = 200000
+    duration = 25
     interestRate = 0.03
     flatFee = 1.5
 
@@ -63,9 +63,9 @@ def plot(destination):
     canvas = FigureCanvasTkAgg(fig, master = destination)    # creating the Tkinter canvas containing the Matplotlib figure 
     canvas.draw() 
     canvas.get_tk_widget().pack()                       # placing the canvas on the Tkinter window 
-    #toolbar = NavigationToolbar2Tk(canvas, window)      # creating the Matplotlib toolbar 
-    #toolbar.update() 
-    #canvas.get_tk_widget().pack()                       # placing the toolbar on the Tkinter window
+    toolbar = NavigationToolbar2Tk(canvas, destination)      # creating the Matplotlib toolbar 
+    toolbar.update() 
+    canvas.get_tk_widget().pack()                       # placing the toolbar on the Tkinter window
 
 
 class MainApplication:
@@ -81,9 +81,24 @@ class MainApplication:
 class LoanSimulatorTab:
     def __init__(self, master):
         self.master = master
-        loanTab = ttk.Frame(master)
-        self.master.add(loanTab, text = " Loan simulator ")
-        plot(loanTab)
+        self.padding = 5
+        self.loanTab = ttk.Frame(master, padding = self.padding)
+        self.master.add(self.loanTab, text = " Loan simulator ")
+        self.loanTab.update()
+
+        # Add settings (left) frame
+        self.settingsFrame = ttk.Labelframe(self.loanTab, text='Setting', padding = 10)
+        self.settingsFrame.pack(side = LEFT, fill = BOTH, expand = YES, padx = 5)
+        plotButton = ttk.Button(self.settingsFrame, text = "Plot", command = lambda : plot(displayWindow))
+        plotButton.pack()
+
+        # Add display (right) frame
+        displayWindow = self.DisplayFrame = ttk.Labelframe(self.loanTab, text='Display', padding = 10)
+        self.DisplayFrame.pack(side = RIGHT, fill = BOTH, expand = YES, padx = 5)
+        plot(self.DisplayFrame)
+
+    def plot(self):
+        print("Called plot")
 
 
 class StockSimulatorTab:
@@ -94,12 +109,9 @@ class StockSimulatorTab:
 
 
 # Main
-def main():
+if __name__ == '__main__':
     window = ttk.Window(themename = "darkly", title = "Investment simulator")                       # Themes : https://ttkbootstrap.readthedocs.io/en/latest/themes
     window.geometry(f"{m.width*0.8:.0f}x{m.height*0.8:.0f}+{m.width*0.1:.0f}+{m.height*0.1:.0f}")
     mainApp = MainApplication(window)
-    window.mainloop()                                                                               # run the gui 
-
-
-if __name__ == '__main__':
-    main()
+    window.mainloop()
+    
