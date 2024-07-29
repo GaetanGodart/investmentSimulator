@@ -1,10 +1,13 @@
+# TTK bootstrap for GUI
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+# Matplotlib to plot graphs
 from matplotlib import rcParams
-from matplotlib.figure import Figure 
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
-import numpy as np
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+# Screen info for width and heigh of monitor
 from screeninfo import get_monitors
+# Regex for experessions
 import re
 
 # Local imports
@@ -60,12 +63,11 @@ class LoanSimulatorTab:
         self.loanTab = ttk.Frame(master, padding = self.padding)
         self.master.add(self.loanTab, text = " Loan simulator ")
         self.loanTab.update()
-        self.addSettingsFrame(master)
+        self.addSettingsFrame()
         self.addDisplayFrame()
         self.plot()
 
-    def addSettingsFrame(self, master):
-        self.master = master
+    def addSettingsFrame(self):
         self.settingsFrame = ttk.Labelframe(self.loanTab, text='Setting', padding = 10)
         self.settingsFrame.pack(side = LEFT, fill = BOTH, expand = YES, padx = 5)
         # Plot button
@@ -76,34 +78,41 @@ class LoanSimulatorTab:
         capitalLabelFrame.pack(fill = None, expand = NO, pady = 10)
         self.capitalEntry = ttk.Entry(capitalLabelFrame, textvariable = "150000", validate="all", validatecommand=(self.digit_func, '%P'))    # Why no show 150000?
         self.capitalEntry.insert(0, "150000")
+        self.capitalEntry.bind("<Return>", self.onEnterKeyPress)
         self.capitalEntry.pack(padx = 20)
         # Entry duration of loan
         durationLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Duration of the loan (in years)", padding = 10)
         durationLabelFrame.pack(fill = None, expand = NO, pady = 10)
         self.durationEntry = ttk.Entry(durationLabelFrame, textvariable = "25", validate="all", validatecommand=(self.digit_func, '%P'))
         self.durationEntry.insert(0, "25")
+        self.durationEntry.bind("<Return>", self.onEnterKeyPress)
         self.durationEntry.pack(padx = 20)
         # Entry interest rate per year
         interestLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Interest rate (per year)", padding = 10)
         interestLabelFrame.pack(fill = None, expand = NO, pady = 10)
         self.interestEntry = ttk.Entry(interestLabelFrame, textvariable = "0.03", validate="all", validatecommand=(self.digit_func, '%P'))
         self.interestEntry.insert(0, "0.03")
+        self.interestEntry.bind("<Return>", self.onEnterKeyPress)
         self.interestEntry.pack(padx = 20)
         # Entry flat fee per month
         flatFeeLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Flat fee (per month)", padding = 10)
         flatFeeLabelFrame.pack(fill = None, expand = NO, pady = 10)
         self.flatFeeEntry = ttk.Entry(flatFeeLabelFrame, textvariable = "1.5", validate="all", validatecommand=(self.digit_func, '%P'))
         self.flatFeeEntry.insert(0, "1.5")
+        self.flatFeeEntry.bind("<Return>", self.onEnterKeyPress)
         self.flatFeeEntry.pack(padx = 20)
 
     def addDisplayFrame(self):
         displayWindow = self.displayFrame = ttk.Labelframe(self.loanTab, text='Display', padding = 10)
         self.displayFrame.pack(side = RIGHT, fill = BOTH, expand = YES, padx = 5)
         return displayWindow
+    
+    def onEnterKeyPress(self, event):
+        self.plot()
 
     def validate_number(self, s) -> bool:
         cleaned = s.replace(' ', '').replace(',', '.')                      # Remove spaces and replace commas with dots
-        if re.match(r'^[+-]?(\d+(\.\d*)?|\.\d+)$', cleaned):  return True   # Use regular expression to ensure there is only one decimal point
+        if re.match(r'^[+-]?(\d+(\.\d*)?|\.\d+)$', cleaned): return True    # Use regular expression to ensure there is only one decimal point
         return False
     
     def plot(self):
