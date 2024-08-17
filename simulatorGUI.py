@@ -89,10 +89,10 @@ class LoanSimulatorTab:
         self.durationEntry.bind("<Return>", self.onEnterKeyPress)
         self.durationEntry.pack(padx = 20)
         # Entry interest rate per year
-        interestLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Interest rate (per year)", padding = 10)
+        interestLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Interest rate (per year in %)", padding = 10)
         interestLabelFrame.pack(fill = None, expand = NO, pady = 10)
-        self.interestEntry = ttk.Entry(interestLabelFrame, textvariable = "0.03", validate="all", validatecommand=(self.digit_func, '%P'))
-        self.interestEntry.insert(0, "0.03")
+        self.interestEntry = ttk.Entry(interestLabelFrame, textvariable = "3", validate="all", validatecommand=(self.digit_func, '%P'))
+        self.interestEntry.insert(0, "3")
         self.interestEntry.bind("<Return>", self.onEnterKeyPress)
         self.interestEntry.pack(padx = 20)
         # Entry flat fee per month
@@ -137,7 +137,7 @@ class LoanSimulatorTab:
         plot1.plot(remaining, label = "Remaining", color = themeBlue)                                               # Remaining line
         plot1.fill_between(range(duration*12+2), costOfLoan + payedBack, payedBack, color = themeRed, alpha = .2)   # Cost area
         plot1.fill_between(range(duration*12+2), payedBack, color = themeGreen, alpha = .2)                         # Capital area
-        plot1.set_title(f"{duration} years | {interestRate*100:.1f}% | {flatFee:.1f}€ flat | {montlyPayment:.0f}€/month | +{(100*costOfLoan[-1]+capital)/capital:.0f}% payed")
+        plot1.set_title(f"{duration} years | {interestRate}% | {flatFee:.1f}€ flat | {montlyPayment:.0f}€/month | +{(100*costOfLoan[-1]+capital)/capital:.0f}% payed")
         plot1.legend()
         plot1.set_facecolor(themeBackgroundColor)
 
