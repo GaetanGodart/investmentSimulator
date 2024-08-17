@@ -112,11 +112,11 @@ class LoanSimulatorTab:
         self.plot()
 
     def validate_number(self, s) -> bool:
-        if re.match(r'^(\d+(\.\d*)?|\.\d+)$', s.replace(',', '.')): return True    # Use regular expression to ensure there is only one decimal point
+        if re.match(r'^(\d+(\.\d*)?|\.\d+)$', s): return True    # Use regular expression to ensure there is only one decimal point
         return False
     
     def validate_int_number(self, s) -> bool:
-        if re.match(r'^(\d+)$', s): return True    # Use regular expression to ensure there is only one decimal point
+        if re.match(r'^(\d+)$', s): return True    # Use regular expression to ensure there is only no decimal point
         return False
 
     def plot(self):
@@ -125,10 +125,10 @@ class LoanSimulatorTab:
         fig = Figure()                                      # The figure that will contain the plot 
         plot1 = fig.add_subplot(1, 1, 1)                    # Adding the subplot 
 
-        capital = float(self.capitalEntry.get().replace(' ', '').replace(',', '.'))
-        duration = int(float(self.durationEntry.get().replace(' ', '').replace(',', '.')))
-        interestRate = float(self.interestEntry.get().replace(' ', '').replace(',', '.'))
-        flatFee = float(self.flatFeeEntry.get().replace(' ', '').replace(',', '.'))
+        capital = int(self.capitalEntry.get())
+        duration = int(self.durationEntry.get())
+        interestRate = float(self.interestEntry.get())
+        flatFee = float(self.flatFeeEntry.get())
 
         montlyPayment, costOfLoan, payedBack, remaining = loanCalculator.calculateLoan(capital, duration, interestRate, flatFee)
 
