@@ -122,7 +122,7 @@ class LoanSimulatorTab:
         plot1 = fig.add_subplot(1, 1, 1)                    # Adding the subplot 
 
         capital = float(self.capitalEntry.get().replace(' ', '').replace(',', '.'))
-        duration = int(self.durationEntry.get().replace(' ', '').replace(',', '.'))
+        duration = int(float(self.durationEntry.get().replace(' ', '').replace(',', '.')))
         interestRate = float(self.interestEntry.get().replace(' ', '').replace(',', '.'))
         flatFee = float(self.flatFeeEntry.get().replace(' ', '').replace(',', '.'))
 
