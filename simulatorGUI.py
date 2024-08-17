@@ -59,6 +59,7 @@ class LoanSimulatorTab:
     def __init__(self, master):
         self.master = master
         self.digit_func = master.register(self.validate_number)
+        self.digit_int_func = master.register(self.validate_int_number)
         self.padding = 5
         self.loanTab = ttk.Frame(master, padding = self.padding)
         self.master.add(self.loanTab, text = " Loan simulator ")
@@ -76,14 +77,14 @@ class LoanSimulatorTab:
         # Entry capiptal to lend
         capitalLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Capital to lend", padding = 10)
         capitalLabelFrame.pack(fill = None, expand = NO, pady = 10)
-        self.capitalEntry = ttk.Entry(capitalLabelFrame, textvariable = "150000", validate="all", validatecommand=(self.digit_func, '%P'))    # Why no show 150000?
+        self.capitalEntry = ttk.Entry(capitalLabelFrame, textvariable = "150000", validate="all", validatecommand=(self.digit_int_func, '%P'))    # Why no show 150000?
         self.capitalEntry.insert(0, "150000")
         self.capitalEntry.bind("<Return>", self.onEnterKeyPress)
         self.capitalEntry.pack(padx = 20)
         # Entry duration of loan
         durationLabelFrame = ttk.LabelFrame(self.settingsFrame, text = "Duration of the loan (in years)", padding = 10)
         durationLabelFrame.pack(fill = None, expand = NO, pady = 10)
-        self.durationEntry = ttk.Entry(durationLabelFrame, textvariable = "25", validate="all", validatecommand=(self.digit_func, '%P'))
+        self.durationEntry = ttk.Entry(durationLabelFrame, textvariable = "25", validate="all", validatecommand=(self.digit_int_func, '%P'))
         self.durationEntry.insert(0, "25")
         self.durationEntry.bind("<Return>", self.onEnterKeyPress)
         self.durationEntry.pack(padx = 20)
@@ -111,10 +112,13 @@ class LoanSimulatorTab:
         self.plot()
 
     def validate_number(self, s) -> bool:
-        cleaned = s.replace(' ', '').replace(',', '.')                      # Remove spaces and replace commas with dots
-        if re.match(r'^[+-]?(\d+(\.\d*)?|\.\d+)$', cleaned): return True    # Use regular expression to ensure there is only one decimal point
+        if re.match(r'^(\d+(\.\d*)?|\.\d+)$', s.replace(',', '.')): return True    # Use regular expression to ensure there is only one decimal point
         return False
     
+    def validate_int_number(self, s) -> bool:
+        if re.match(r'^(\d+)$', s): return True    # Use regular expression to ensure there is only one decimal point
+        return False
+
     def plot(self):
         for widgets in self.displayFrame.winfo_children(): widgets.destroy()    # Remove previous plot
 
@@ -158,4 +162,3 @@ if __name__ == '__main__':
     window.geometry(f"{m.width*0.8:.0f}x{m.height*0.8:.0f}+{m.width*0.1:.0f}+{m.height*0.1:.0f}")
     mainApp = MainApplication(window)
     window.mainloop()
-    
